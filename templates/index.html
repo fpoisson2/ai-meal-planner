@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+<form id="update_form" method="post" action="{{ url_for('update_meal') }}"></form>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Repas</th>
+      <th>Noter</th>
+      <th>Appréciation</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for d in week %}
+    <tr>
+      <td>{{ d.date }}</td>
+      <td><input type="text" class="form-control" name="{{ d.date }}" value="{{ d.meal }}" form="update_form"></td>
+      <td>
+        <form method="post" action="{{ url_for('rate_meal') }}" class="d-inline">
+          <input type="hidden" name="date" value="{{ d.date }}">
+          <input type="hidden" name="rating" value="plus">
+          <button type="submit" class="btn btn-sm btn-outline-success">👍</button>
+        </form>
+        <form method="post" action="{{ url_for('rate_meal') }}" class="d-inline">
+          <input type="hidden" name="date" value="{{ d.date }}">
+          <input type="hidden" name="rating" value="moins">
+          <button type="submit" class="btn btn-sm btn-outline-danger">👎</button>
+        </form>
+      </td>
+      <td>{{ d.rating or '' }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div class="mb-3">
+  <button type="submit" form="update_form" class="btn btn-primary">Sauvegarder</button>
+  <form method="post" action="{{ url_for('generate') }}" class="d-inline">
+    <button type="submit" class="btn btn-success">Générer les repas</button>
+  </form>
+</div>
+<h2>Historique</h2>
+<ul>
+  {% for m in history %}
+    <li>{{ m['date'] }} : {{ m['meal'] }} {% if m['rating'] %}({{ m['rating'] }}){% endif %}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
